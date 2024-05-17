@@ -299,13 +299,10 @@ class UserAdm( UserOp ):
         uid = str( found[ 0 ][ "id" ] )
         self.remove_from_q_uid( uid )
 
-        # self.hdb.sql( "DELETE FROM library.users "
-        #              f"WHERE id = \"{ uid }\"" )
         self.hdb.sql( "UPDATE library.users "
                       "SET username = NULL "
                      f"WHERE uid = \"{ uid }\"" )
-        # self.hdb.sql( "DELETE FROM library.user_books "
-        #              f"WHERE uid = \"{ uid }\"" )
+
         return True
 
     def change( self, usrname: str, role: str ) -> None:
