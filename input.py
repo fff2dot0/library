@@ -6,7 +6,7 @@ from print import *
 
 
 def get_input( is_pass = False ) -> str:
-    prompt = f"{ Color.GREEN }[#library#]{ Color.RESET }-->"
+    prompt = f"{ Color.DARK_GREEN }[#library#]{ Color.RESET }-->"
     return getpass( prompt=prompt ) if is_pass else input( prompt )
 
 
