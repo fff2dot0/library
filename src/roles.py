@@ -51,7 +51,7 @@ class Reader( User ):
         if not txt:
             return False
         self.hdb.sql( "INSERT INTO library.feedback( uid, text ) "
-                     f"VALUES ( \"{ self.id }\", { txt } )" )
+                     f"VALUES ( \"{ self.id }\", \"{ txt }\" )" )
         return True
 
 
