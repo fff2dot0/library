@@ -1,6 +1,6 @@
-# Prerequests
+# REQUIREMENTS
 
-OS: any<br>
+OS: Linux<br>
 Memory: >= 4GB RAM<br>
 Hard disk free space: >= 1 MB<br>
 Python version: >= 3.10
@@ -8,12 +8,12 @@ Python version: >= 3.10
 
 # OVERVIEW OF INSTALLATION PACKAGE
 
-This package contains directory src with python files, which implement application logic; requirements.txt, which contains information about third-party python modules, which are used by this application, install.py for importing those modules; library.py for running the application.
+This package contains directory *src* with python files, which implement application logic; *requirements.txt*, which contains information about third-party python packages, which are used by this application, *install.py* for importing those modules; *library.py* for running the application.
 
 
 # INSTALLATION
 
-If you have git installed: run in your terminal(powershell, bash, ...):
+If you have git installed: run in your terminal:
 ```cmd
 git clone https://github.com/fff2dot0/library.git
 cd library
@@ -26,16 +26,14 @@ cd library-main
 python3 install.py
 ```
 
-*Note: author recommends to create a virtual environment, and install it there. For details, see [documentation](https://docs.python.org/3/library/venv.html).*
+*Note: the author recommends creating a virtual environment, and installing it there. For details, see [documentation](https://docs.python.org/3/library/venv.html).*
 
 
 # USAGE
 
-*Note: before using this app, you have to have an account. You can get it from administrator of library. After that, put your login and password into file ".env" in directory "src". Now, you are ready to start.*
+*Note: before using this app, you have to have an account. You can get it from an administrator of the library. After that, put your login and password into the file ".env" in the directory "src". Now, you are ready to start.*
 
 To start an application run this command in the application's directory:
 ```cmd
 python3 library.py
 ```
-
-
