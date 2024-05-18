@@ -18,18 +18,17 @@ def parse_date( date_time: str ) -> str:
 
 
 def parse_dates( sql: SQL_RETURN ) -> SQL_RETURN:
+    if not sql:
+        return sql
+    fields: List[ str ] = []
+    for k in sql[ 0 ]:
+        if k.find( "date" ) != -1:
+            fields.append( k )
+
     for row in sql:
-        for date in [ "date_start", "date_ret_exp", "date_ret_act" ]:
+        for date in fields:
             if row[ date ] is not None:
                 row[ date ] = parse_date( str( row[ date ] ) )
-
-    return sql
-
-
-def parse_date_create( sql: SQL_RETURN ) -> SQL_RETURN:
-    for row in sql:
-        if row[ "date_create" ] is not None:
-            row[ "date_create" ] = parse_date( str( row[ "date_create" ] ) )
 
     return sql
 
@@ -112,14 +111,14 @@ class BookLib( BookRead ):
                               "FROM library.users AS u JOIN library.books AS b JOIN library.waiting_queue AS q "
                              f"WHERE u.id = q.uid AND b.id = q.bid AND b.code = { code } "
                               "ORDER BY q.priority DESC, q.date_create ASC" )
-        return parse_date_create( queue )
+        return parse_dates( queue )
 
     def view_all_q( self ) -> SQL_RETURN:
         queue = self.hdb.sql( "SELECT b.code, u.username, q.date_create, q.priority "
                               "FROM library.users AS u JOIN library.books AS b JOIN library.waiting_queue AS q "
                               "WHERE u.id = q.uid AND b.id = q.bid "
                               "ORDER BY q.priority DESC, q.date_create ASC" )
-        return parse_date_create( queue )
+        return parse_dates( queue )
 
     def add2queue( self, code: int, username: str, priority: str ) -> None:
         bid = self.hdb.sql( f"SELECT id FROM library.books WHERE books.code = { code }" )[ 0 ][ "id" ]
@@ -132,7 +131,7 @@ class BookLib( BookRead ):
 class UserOp:
     PURCHASED_SELECT_FROM = "SELECT u.name_surname, u.username, b.name, b.author, ub.date_ret_exp " \
                             "FROM library.books AS b JOIN library.user_books AS ub JOIN library.users AS u "
-    PURCHASED_WHERE       = "WHERE u.id = ub.uid AND b.id = ub.bid AND u.username IS NOT NULL "
+    PURCHASED_WHERE       = "WHERE u.id = ub.uid AND b.id = ub.bid AND u.username IS NOT NULL AND ub.date_ret_act IS NULL "
     PURCHASED_ORDER_BY    = "ORDER BY u.name_surname, b.author, b.name"
     def __init__( self, hdb: HarperDB ) -> None:
         self.hdb = hdb
@@ -228,11 +227,11 @@ class UserLib( UserOp ):
         self.hdb = hdb
 
     def debtors( self ) -> SQL_RETURN:
-        return self.hdb.sql( "SELECT u.username, u.name_surname, b.code, b.name, b.author, ub.date_ret_exp "
-                             "FROM library.users AS u JOIN library.books AS b JOIN library.user_books AS ub "
-                            f"{ self.PURCHASED_WHERE }AND ub.date_ret_exp < GETDATE() "
-                                                     "AND ub.date_ret_act IS NULL "
-                             "ORDER BY ub.date_ret_exp" )
+        res = self.hdb.sql( "SELECT u.username, u.name_surname, b.code, b.name, b.author, ub.date_ret_exp "
+                            "FROM library.users AS u JOIN library.books AS b JOIN library.user_books AS ub "
+                           f"{ self.PURCHASED_WHERE }AND ub.date_ret_exp < DATE( GETDATE() ) "
+                            "ORDER BY ub.date_ret_exp" )
+        return parse_dates( res )
 
     def give_book( self, code: int, username: str, ret_exp: str ) -> int:
         book = self.hdb.sql( "SELECT id, available "
