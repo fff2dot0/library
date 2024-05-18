@@ -34,6 +34,7 @@ def sign_in() -> None:
 
 def com( uid: str, usrname: str, role: str, hdb: HarperDB ) -> None:
     print_logo()
+    print_help()
     print( f"{ Color.CYAN }Welcome back, { usrname }.{ Color.RESET }" )
 
     if role == "reader":
