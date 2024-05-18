@@ -1,5 +1,5 @@
-from com import sign_in
-from print import print_info
+from src.com import sign_in
+from src.print import print_info
 
 
 def __main__():
